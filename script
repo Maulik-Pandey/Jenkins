@@ -5,7 +5,7 @@ pipeline {
   stages {
     stage('Build') {
       steps {
-         docker run -d --name apache2-container -it  -p 9999:80 ubuntu/apache2
+         sh 'ls'
       }
     }
   }
