@@ -1,0 +1,47 @@
+# This is a basic workflow to help you get started with Actions
+
+name: CI
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events but only for the "main" branch
+  push:
+    branches: [ "none" ]
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v4
+
+      - name: Get PR details
+        run: |
+          BASE_BRANCH=$(jq --raw-output .pull_request.base.ref "$GITHUB_EVENT_PATH")
+          PR_BRANCH=$(jq --raw-output .pull_request.head.ref "$GITHUB_EVENT_PATH")
+
+      - name: Checkout base branch and get package.json version
+        run: |
+          git fetch origin $BASE_BRANCH
+          git checkout $BASE_BRANCH
+          BASE_PACKAGE_JSON=$(cat package.json)
+          BASE_VERSION=$(jq -r .version <<< "$BASE_PACKAGE_JSON")
+          echo "Base branch version: $BASE_VERSION"
+
+      - name: Checkout PR branch and get package.json version
+        run: |
+          git fetch origin $PR_BRANCH
+          git checkout $PR_BRANCH
+          PR_PACKAGE_JSON=$(cat package.json)
+          PR_VERSION=$(jq -r .version <<< "$PR_PACKAGE_JSON")
+          echo "PR branch version: $PR_VERSION"
+
+      - name: Compare versions and send notification
+        run: |
+          if [[ "$BASE_VERSION" != "$PR_VERSION" ]]; then
+            echo "Versions are different: Base version is $BASE_VERSION, PR version is $PR_VERSION"
