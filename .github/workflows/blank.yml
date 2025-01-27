@@ -43,6 +43,7 @@ jobs:
 
       - name: Compare versions and send notification
         run: |
-          if [[ "$BASE_VERSION" != "$PR_VERSION" ]]; then
-            echo "Versions are different: Base version is $BASE_VERSION, PR version is $PR_VERSION"
+          if [[ "$BASE_VERSION" == "$PR_VERSION" ]]; then
+            echo "Versions are same"
+            exit 1
           fi
