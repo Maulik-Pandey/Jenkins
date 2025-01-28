@@ -46,4 +46,6 @@ jobs:
           if [[ "$BASE_VERSION" == "$PR_VERSION" ]]; then
             echo "Versions are same"
             exit 1
+          else
+            echo "Proceeding"
           fi
