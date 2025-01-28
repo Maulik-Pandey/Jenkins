@@ -1,6 +1,6 @@
 {
   "name": "test",
-  "version": "1.0.79-rel-prod",
+  "version": "1.0.80",
   "description": "Node server",
   "main": "index.js",
   "author": "",
